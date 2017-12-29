@@ -142,8 +142,10 @@ def create_repo():
 
 
 def install_agent():
-    return launch_command('yum install -y --enablerepo=%s %s' %
-                          ('{repo_names}', repo_packages))
+    return launch_command('yum install -y %s %s' %
+                          ("--enablerepo=%s" % '{repo_names}' \
+                           if '{repo_names}' else "",
+                           repo_packages))
 
 
 def configure_server():
@@ -154,8 +156,8 @@ def configure_server():
 
 
 def start_services():
-    launch_command("systemctl enable chroma-agent.service")
-    launch_command("systemctl start iml-storage-server.target")
+    output = launch_command("systemctl enable iml-agent")
+    output = launch_command("systemctl start iml-agent")
 
 
 def kill_zombies():
