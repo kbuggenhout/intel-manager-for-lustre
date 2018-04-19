@@ -366,9 +366,9 @@ if ${UPGRADE_FROM_3:-false}; then
     #       our compressed timelines
     yum clean all
 
-    yum -y upgrade python2-iml-agent\*
+    yum -y upgrade chroma-agent\*
 
-    systemctl enable iml-agent.service
+    systemctl enable chroma-agent.service
 
     systemctl stop zed
     rmmod zfs zcommon znvpair spl

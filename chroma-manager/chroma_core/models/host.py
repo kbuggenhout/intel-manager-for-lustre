@@ -1481,7 +1481,7 @@ proxy=_none_
 
         return [(UpdatePackagesStep, {'host': self.host,
                                       'bundles': [],
-                                      'packages': ['python2-iml-agent']}),
+                                      'packages': ['chroma-agent']}),
                 (UpdateYumFileStep, {'host': self.host,
                                      'filename': REPO_FILENAME,
                                      'file_contents': repo_file_contents}),

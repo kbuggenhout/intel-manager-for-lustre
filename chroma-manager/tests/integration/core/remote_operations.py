@@ -24,7 +24,7 @@ stop_agent_cmd = '''
     systemctl stop iml-storage-server.target
     i=0
 
-    while systemctl status iml-agent && [ "$i" -lt {timeout} ]; do
+    while systemctl status chroma-agent && [ "$i" -lt {timeout} ]; do
         ((i++))
         sleep 1
     done

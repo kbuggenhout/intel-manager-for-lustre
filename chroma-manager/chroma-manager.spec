@@ -61,7 +61,7 @@ Requires: iml-online-help
 Requires: iml-device-scanner-aggregator
 Requires: createrepo
 Requires: python2-toolz
-Conflicts: python2-iml-agent
+Conflicts: chroma-agent
 Requires(post): selinux-policy-targeted
 Obsoletes: httpd
 Obsoletes: mod_proxy_wstunnel
