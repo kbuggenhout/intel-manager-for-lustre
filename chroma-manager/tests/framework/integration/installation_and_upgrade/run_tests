@@ -203,6 +203,23 @@ if [ -f ~/storage_server.repo.in ]; then
     STORAGE_SERVER_REPO=~/storage_server.repo.in
 fi
 
+if ! ${UPGRADE_FROM_3:-false}; then
+    # need to get the additional storage server repos on the agent
+    # nodes *BEFORE* the upgrade so that when the upgrade completes
+    # and the sessions to the agent are re-established, the agent
+    # already has access to the needed additional repos
+    pdsh -l root -R ssh -S -w "$(spacelist_to_commalist "${STORAGE_APPLIANCES[@]}")" "exec 2>&1; set -xe
+    # add any repos required by this test run
+    if [ -n \"$STORAGE_SERVER_REPOS\" ]; then
+        for repo in $STORAGE_SERVER_REPOS; do
+            curl \"\$repo\" >> /etc/yum.repos.d/Intel-Lustre-Agent.repo
+        done
+    fi" | dshbak -c
+    if [ "${PIPESTATUS[0]}" != "0" ]; then
+        exit 1
+    fi
+fi
+
 # Install and setup manager
 ARCHIVE_SUFFIX=.tar.gz
 if $JENKINS; then
@@ -382,19 +399,7 @@ if ${UPGRADE_FROM_3:-false}; then
     # agent <-> management communications be taking care of this for us?
 
     sleep 60
-else
-    pdsh -l root -R ssh -S -w "$(spacelist_to_commalist "${STORAGE_APPLIANCES[@]}")" "exec 2>&1; set -xe
-    # add any repos required by this test run
-    if [ -n \"$STORAGE_SERVER_REPOS\" ]; then
-        for repo in $STORAGE_SERVER_REPOS; do
-            curl \"\$repo\" >> /etc/yum.repos.d/Intel-Lustre-Agent.repo
-        done
-    fi" | dshbak -c
-    if [ "${PIPESTATUS[0]}" != "0" ]; then
-        exit 1
-    fi
 fi
-
 echo "End upgrade and setup."
 
 echo "Test existing filesystem is still there"
