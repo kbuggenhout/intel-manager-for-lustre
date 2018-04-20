@@ -413,6 +413,7 @@ ssh root@$TEST_RUNNER "exec 2>&1; set -xe
 cd /usr/share/chroma-manager/
 unset http_proxy; unset https_proxy
 export UPGRADE_FROM_3=$UPGRADE_FROM_3
+export UPGRADE_FROM_VER=$IEEL_FROM_VER
 ./tests/integration/run_tests -f -c /root/cluster_cfg.json -x ~/test_report_post_upgrade.xml $TESTS"
 
 # now provide an information inventory of the difference in the RPM
