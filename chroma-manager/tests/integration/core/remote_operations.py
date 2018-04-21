@@ -1139,7 +1139,8 @@ class RealRemoteOperations(RemoteOperations):
         return result.stdout
 
     def yum_update(self, server):
-        self._ssh_address(server['address'], "dnf -y update")
+        result = self._ssh_address(server['address'], "dnf repolist; dnf check-update; dnf -y update")
+        logger.debug("yum upgrade result: %s\n%s\n%s" % (result.rc, result.stdout, result.stderr))
 
     def default_boot_kernel_path(self, server):
         r = self._ssh_address(server['address'], "grubby --default-kernel")
