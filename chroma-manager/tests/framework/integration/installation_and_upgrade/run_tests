@@ -410,6 +410,10 @@ if ${UPGRADE_FROM_3:-false}; then
 fi
 echo "End upgrade and setup."
 
+pdsh -l root -R ssh -S -w "$(spacelist_to_commalist "${STORAGE_APPLIANCES[@]}")" "exec 2>&1; set -xe
+ls -l /etc/yum.repos.d/Intel-Lustre-Agent.repo || true
+cat /etc/yum.repos.d/Intel-Lustre-Agent.repo || true" | dshbak -c
+
 echo "Test existing filesystem is still there"
 
 TESTS="$TESTS_DIR/test_data_consistancy.py \
