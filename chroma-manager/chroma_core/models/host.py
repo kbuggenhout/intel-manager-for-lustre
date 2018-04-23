@@ -1459,7 +1459,9 @@ class UpdateJob(Job):
     def get_steps(self):
         # Three stage update, first update the agent, then the yum file and then update everything. This means that
         #  when the packages are updated the new agent and yum file is used.
-        repo_file_contents = ""
+
+        # the minimum repos needed on a storage server now
+        repo_file_contents = open("/usr/share/chroma-manager/storage_server.repo").read()
 
         # The base url of the repo.
         base_repo_url = os.path.join(str(settings.SERVER_HTTP_URL), 'repo')
@@ -1481,7 +1483,7 @@ proxy=_none_
 
         return [(UpdatePackagesStep, {'host': self.host,
                                       'bundles': [],
-                                      'packages': ['chroma-agent']}),
+                                      'packages': ['python2-iml-agent']}),
                 (UpdateYumFileStep, {'host': self.host,
                                      'filename': REPO_FILENAME,
                                      'file_contents': repo_file_contents}),
