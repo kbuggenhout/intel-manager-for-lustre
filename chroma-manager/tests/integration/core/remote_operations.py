@@ -1139,7 +1139,7 @@ class RealRemoteOperations(RemoteOperations):
         return result.stdout
 
     def yum_update(self, server):
-        result = self._ssh_address(server['address'], "set -x; date; ls -l /etc/yum.repos.d/Intel-Lustre-Agent.repo; cat /etc/yum.repos.d/Intel-Lustre-Agent.repo; dnf repolist; dnf check-update; dnf -y update; rpm -qa | grep -e chroma -e iml")
+        result = self._ssh_address(server['address'], "set -x; date; stat /etc/yum.repos.d/Intel-Lustre-Agent.repo; ls -l /etc/yum.repos.d/Intel-Lustre-Agent.repo; cat /etc/yum.repos.d/Intel-Lustre-Agent.repo; dnf repolist; dnf check-update; dnf -y update; rpm -qa | grep -e chroma -e iml")
         logger.debug("yum upgrade result: %s\n%s\n%s" % (result.rc, result.stdout, result.stderr))
 
     def default_boot_kernel_path(self, server):
