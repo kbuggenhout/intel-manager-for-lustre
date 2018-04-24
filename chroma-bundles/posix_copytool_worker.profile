@@ -14,7 +14,7 @@
   "ui_description": "An HSM agent node using the POSIX copytool",
   "packages": {
     "external": [
-      "chroma-agent-management",
+      "python2-iml-agent-management",
       "lustre-client"
     ]
   }

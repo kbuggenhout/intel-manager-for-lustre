@@ -13,7 +13,7 @@
   "ui_description": "A server running the Robinhood Policy Engine",
   "packages": {
     "external": [
-      "chroma-agent-management",
+      "python2-iml-agent-management",
       "lustre-client",
       "robinhood-lhsm",
       "robinhood-webgui",
