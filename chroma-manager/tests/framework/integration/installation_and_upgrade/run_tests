@@ -379,7 +379,8 @@ if ${UPGRADE_FROM_3:-false}; then
 
     yum -y upgrade chroma-agent\*
 
-    systemctl enable chroma-agent.service
+    # this shouldn't be necessary now that iml-agent is using a preset
+    #systemctl enable chroma-agent.service
 
     systemctl stop zed
     rmmod zfs zcommon znvpair spl
