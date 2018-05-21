@@ -399,12 +399,15 @@ class ChromaIntegrationTestCase(ApiTestCaseWithTestReset):
         filesystem_id = response.json['filesystem']['id']
         command_id = response.json['command']['id']
 
-        self.wait_for_command(
-            self.chroma_manager,
-            command_id,
-            verify_successful=verify_successful,
-            timeout = LONG_TEST_TIMEOUT
-        )
+        self._fetch_help(
+            lambda: self.wait_for_command(
+                self.chroma_manager,
+                command_id,
+                verify_successful=verify_successful,
+                timeout = LONG_TEST_TIMEOUT),
+            ['tom.nabarro@outlook.com', 'joe.grund@intel.com'],
+            'Create filesystem failed maybe missing VolumeNode',
+            timeout=9000)
 
         # Verify mgs and fs targets in pacemaker config for hosts
         self.remote_operations.check_ha_config(hosts, filesystem['name'])
