@@ -7,7 +7,7 @@ Introduction
 
 Storage plugins are responsible for delivering information about
 entities that are not part of the Linux\*/Lustre\* stack.  This primarily means
-storage controllers and network devices, but the plugin system is generic and 
+storage controllers and network devices, but the plugin system is generic and
 does not limit the type of objects that can be reported.
 
 To present device information to the manager server, a Python\* module is written using
@@ -20,12 +20,12 @@ the Storage Plugin API described in this document:
 * A main plugin class is implemented to provide required hooks for
   initialization and teardown: :ref:`storage_plugins`
 
-The API is designed to minimize the lines of code required to write a plugin, 
+The API is designed to minimize the lines of code required to write a plugin,
 minimize the duplication of effort between different plugins, and make as much
-of the plugin code as possible declarative in style to minimize the need for 
+of the plugin code as possible declarative in style to minimize the need for
 per-plugin testing.  For example, rather than having plugins procedurally
 check for resources that are in bad states during an update, we provide the means to declare
-conditions that are automatically checked.  Similarly, rather than requiring explicit 
+conditions that are automatically checked.  Similarly, rather than requiring explicit
 notification from the plugin when a resource attribute is changed, we detect
 assignments to attributes and schedule transmission of updates in the background.
 
@@ -34,14 +34,14 @@ only discovery of storage resources at the time the plugin is loaded (requiring 
 restart to detect any changes).  Most plugins will provide at least the initial discovery
 and live detection of added/removed resources of certain classes, for example LUNs
 as they are created and destroyed.  On a per-resource-class basis, alert conditions
-can be added to report issues with the resources such as pools being rebuilt or 
+can be added to report issues with the resources such as pools being rebuilt or
 physical disks that fail.
 
 In addition to reporting a set of resources, plugins report a set of relationships between
-the resources, used for associating problems with one resource with another resource.  This 
-takes the form of an "affects" relationship between resources, for example the health of 
+the resources, used for associating problems with one resource with another resource.  This
+takes the form of an "affects" relationship between resources, for example the health of
 a physical disk affects the health of its pool, and the health of a pool affects LUNs
-in that pool.  These relationships allow the effects of issues to be traced all the 
+in that pool.  These relationships allow the effects of issues to be traced all the
 way up to the Lustre file system level and an appropriate drill-down user interface to be provided.
 
 The API may change over time.  To ensure plugins are able to run against a particular
@@ -75,7 +75,7 @@ Declaring Resources
 -------------------
 
 A `Resource` represents a single, uniquely identified object.  It may be a physical
-device such as a physical hard drive, or a virtual object such as a storage pool or 
+device such as a physical hard drive, or a virtual object such as a storage pool or
 virtual machine.
 
 .. code-block:: python
@@ -91,8 +91,8 @@ virtual machine.
            identifier = identifiers.GlobalId('serial_number')
 
 In general, storage resources may inherit from Resource directly, but
-optionally they may inherit from a built-in resource class as a way of 
-identifying common resource types for presentation purposes.  See 
+optionally they may inherit from a built-in resource class as a way of
+identifying common resource types for presentation purposes.  See
 :ref:`storage_plugin_builtin_resource_classes` for the available built-in
 resource types.
 
@@ -107,7 +107,7 @@ from the ``attributes`` module.  These are special classes which:
 
 Various attribute classes are available for use, see :ref:`storage_plugin_attribute_classes`.
 
-Attributes may be optional or mandatory.  They are mandatory by default. To 
+Attributes may be optional or mandatory.  They are mandatory by default. To
 make an attribute optional, pass ``optional = True`` to the constructor.
 
 Statistics
@@ -119,7 +119,7 @@ attributes in the way they are presented to the user.  See :ref:`storage_plugin_
 for more on statistics.
 
 Statistics are stored at runtime by assigning to the relevant
-attribute of a storage resource instance.  For example, for a 
+attribute of a storage resource instance.  For example, for a
 ``HardDrive`` instance ``hd``, assigning ``hd.temperature = 20`` updates
 the statistic.
 
@@ -130,8 +130,8 @@ Every Resource subclass is required to have an ``identifier`` attribute
 that declares which attributes are to be used to uniquely identify the resource.
 
 If a resource has a universally unique name and may be reported from more than one
-place (for example, a physical disk which may be reported from more than one 
-controller), use ``chroma_core.lib.storage_plugin.api.identifiers.GlobalId``.  For example, 
+place (for example, a physical disk which may be reported from more than one
+controller), use ``chroma_core.lib.storage_plugin.api.identifiers.GlobalId``.  For example,
 in the ``HardDrive`` class described above, each drive has a unique factory-assigned ID.
 
 If a resource has an identifier that is scoped to a *scannable* storage resource or
@@ -139,8 +139,8 @@ a resource always belongs to a particular scannable storage resource, use
 ``chroma_core.lib.storage_plugin.api.identifiers.ScopedId``.
 
 Either of the above classes is initialized with a list of attributes which
-in combination are a unique identifier.  For example, if a true hard drive 
-identifier is unavailable, a drive might be identified within a particular couplet 
+in combination are a unique identifier.  For example, if a true hard drive
+identifier is unavailable, a drive might be identified within a particular couplet
 by its shelf and slot number, like this:
 ::
 
@@ -158,11 +158,11 @@ allow the user to create more than one identical resource. Therefore, use with c
 Relationships
 ~~~~~~~~~~~~~
 
-The ``update_or_create`` function used to report resources (see :ref:`storage_plugins`) 
-takes a ``parents`` argument, which is a list of the resources that directly affect the 
-status of this resource.  This relationship does not imply ownership, but rather "a problem 
+The ``update_or_create`` function used to report resources (see :ref:`storage_plugins`)
+takes a ``parents`` argument, which is a list of the resources that directly affect the
+status of this resource.  This relationship does not imply ownership, but rather "a problem
 with parent is a problem with child" relationship.  For example,
-a chain of relationships might be Fan->Enclosure->Physical disk->Pool->LUN.  
+a chain of relationships might be Fan->Enclosure->Physical disk->Pool->LUN.
 The graph of these relationships must be acyclic.
 
 Although plugins will run without any parent relationships, it is important
@@ -184,7 +184,7 @@ Alert conditions are specified for each resource in the Meta section, like this:
             identifier = identifiers.ScopedId('shelf', 'slot')
             alert_conditions = [
                 alert_conditions.ValueCondition('status', warn_states = ['FAILED'], message = "Drive failure")
-               ] 
+               ]
         shelf = attributes.ResourceReference()
         slot = attributes.Integer()
         status = attributes.String()
@@ -201,7 +201,7 @@ necessary to add an `id` argument to allow each alert condition to be uniquely i
             alert_conditions = [
                 alert_conditions.ValueCondition('status', warn_states = ['NEARFAILURE'], message = "Drive near failure", id = 'nearfailure'),
                 alert_conditions.ValueCondition('status', warn_states = ['FAILED'], message = "Drive failure", id = 'failure')
-               ] 
+               ]
         shelf = attributes.ResourceReference()
         slot = attributes.Integer()
         status = attributes.String()
@@ -242,19 +242,19 @@ storage controllers.
 Implementing a Plugin
 ---------------------
 
-The Resource classes are simply declarations of what resources can be 
+The Resource classes are simply declarations of what resources can be
 reported by the plugin and what properties they will have.  The plugin module
 must also contain a subclass of *Plugin* which implements at least the
 ``initial_scan`` function:
 
 .. automethod:: chroma_core.lib.storage_plugin.api.plugin.Plugin.initial_scan
 
-Within ``initial_scan``, plugins use the ``update_or_create`` function to 
+Within ``initial_scan``, plugins use the ``update_or_create`` function to
 report resources.
 
 .. automethod:: chroma_core.lib.storage_plugin.api.plugin.Plugin.update_or_create
 
-If any resources are allocated in ``initial_scan``, such as threads or 
+If any resources are allocated in ``initial_scan``, such as threads or
 sockets, they may be freed in the ``teardown`` function:
 
 .. automethod:: chroma_core.lib.storage_plugin.api.plugin.Plugin.teardown
@@ -266,9 +266,9 @@ You can set the delay between ``update_scan`` calls by assigning to
 
 .. automethod:: chroma_core.lib.storage_plugin.api.plugin.Plugin.update_scan
 
-If a resource has changed, you can either use ``update_or_create`` to modify 
-attributes or parent relationships, or you can directly assign to the resource's 
-attributes or use its add_parent and remove_parent functions.  If a resource has 
+If a resource has changed, you can either use ``update_or_create`` to modify
+attributes or parent relationships, or you can directly assign to the resource's
+attributes or use its add_parent and remove_parent functions.  If a resource has
 gone away, use ``remove`` to remove it:
 
 .. automethod:: chroma_core.lib.storage_plugin.api.plugin.Plugin.remove
@@ -308,7 +308,7 @@ Names
 Sensible defaults are used wherever possible when presenting UI elements
 relating to storage resources.  For example, by default, attribute names are
 transformed to capitalized text. For example,``file_size`` is transformed to *File size*.  When a different
-name is desired, the plugin author can provide a ``label`` argument to attribute 
+name is desired, the plugin author can provide a ``label`` argument to attribute
 constructors:
 
 ::
@@ -335,7 +335,7 @@ has a ``title`` element with a string value and a ``series`` element whose value
 is a list of statistic names to plot together.
 
 When two or more series are plotted together, they must be of the same type (time series or histogram).  They do
-not have to be in the same units, but only up to two different units may be 
+not have to be in the same units, but only up to two different units may be
 used on the same chart (one Y axis on either side of the chart).
 
 For example, the following resource has a ``charts`` attribute which presents
@@ -397,22 +397,10 @@ is output), add your plugin to ``settings.STORAGE_PLUGIN_DEBUG_PLUGINS``.
 Changes to these settings take effect when the manager server services are
 restarted.
 
-Running the Plugin Process Separately
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-During development, the process that hosts storage plugins can be run separately,
-so that it can be stopped and started quickly by plugin developers:
-
-::
-
-    cd /usr/share/chroma-manager
-    supervisorctl -c production_supervisord.conf stop plugin_runner
-    ./manage.py chroma_service --verbose plugin_runner
-
 Correlating Controller Resources with Linux Devices Using Relations
 -------------------------------------------------------------------
 
-As well as explicit *parents* relations between resources, resource attributes can be 
+As well as explicit *parents* relations between resources, resource attributes can be
 declared to *provide* a particular entity.  This is used for linking up resources between
 different plugins, or between storage controllers and Linux hosts.
 
@@ -571,7 +559,7 @@ subclasses `resources.VirtualMachine`.
             self.update_or_create(MyVirtualMachine, vm_id = 0, controller = controller, address = "192.168.1.11")
 
 When a new VirtualMachine resource is created by a plugin, the configuration
-process is the same as if the host had been added via the manager server user interface, and the added host 
+process is the same as if the host had been added via the manager server user interface, and the added host
 will appear in the list of servers in the user interface.
 
 Advanced: Specifying Homing Information
@@ -580,7 +568,7 @@ Advanced: Specifying Homing Information
 A given device node (i.e. presentation of a LUN) may be a more or less preferable means
 of access to a storage device.  For example:
 
-* If a single LUN is presented on two controller ports, a device node on a host connected to one port 
+* If a single LUN is presented on two controller ports, a device node on a host connected to one port
   may be preferable to a device node on a host connected to the other port.
 * If a LUN is accessible via two device nodes on a single server, one may be preferable to the other.
 
@@ -603,7 +591,7 @@ The products described in this document may contain design defects or errors kno
 Contact your local Intel sales office or your distributor to obtain the latest specifications and before placing your product order.
 
 Copies of documents which have an order number and are referenced in this document, or other Intel literature, may be obtained by calling 1-800-548-4725, or go to:  http\://www.intel.com/design/literature.htm.
-Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries. 
+Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
 
 \* Other names and brands may be claimed as the property of others.
 

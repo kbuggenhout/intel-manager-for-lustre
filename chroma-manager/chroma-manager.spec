@@ -27,7 +27,6 @@ BuildRequires: ed
 Requires: python-setuptools
 Requires: python-prettytable
 Requires: python-dse
-Requires: python2-supervisor
 Requires: python2-jsonschema < 0.9.0
 Requires: python-ordereddict
 Requires: python-uuid
@@ -165,7 +164,6 @@ echo -e "/^DEBUG =/s/= .*$/= False/\nwq" | ed settings.py 2>/dev/null
 # workaround setuptools inanity for top-level datafiles
 cp -a chroma-manager.py build/lib
 cp -a storage_server.repo build/lib
-cp -a production_supervisord.conf build/lib
 cp -a chroma-manager.conf.template build/lib
 cp -a mime.types build/lib
 cp -a agent-bootstrap-script.template build/lib
