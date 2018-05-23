@@ -147,7 +147,6 @@ tests test: unit_tests agent_tests feature_tests integration_tests service_tests
 tarball: version ui-modules $(COPR_REPO_TARGETS)
 	echo "jenkins_fold:start:Make Manager Tarball"
 	rm -f MANIFEST
-	python scripts/production_supervisord.py supervisord.conf > production_supervisord.conf
 	if ! python setup.py sdist > sdist.out; then       \
 	    echo "python setup.py sdist failed.  stdout:"; \
 	    cat sdist.out;                                 \
@@ -171,7 +170,10 @@ rpms: cleandist tarball
 	mkdir -p _topdir/{BUILD,S{PEC,OURCE,RPM}S,RPMS/$(ARCH)}
 	cp dist/chroma-manager-$(PACKAGE_VERSION).tar.gz _topdir/SOURCES
 	gzip -c chroma-config.1 > chroma-config.1.gz
-	cp chroma-supervisor-init.sh chroma-host-discover-init.sh production_supervisord.conf logrotate.cfg chroma-config.1.gz _topdir/SOURCES
+	cp iml-corosync.service iml-gunicorn.service iml-http-agent.service iml-job-scheduler.service _topdir/SOURCES
+	cp iml-lustre-audit.service iml-manager.target iml-plugin-runner.service iml-power-control.service _topdir/SOURCES
+	cp iml-realtime.service iml-settings-populator.service iml-stats.service iml-syslog.service iml-view-server.service _topdir/SOURCES
+	cp chroma-host-discover-init.sh logrotate.cfg chroma-config.1.gz _topdir/SOURCES
 	cp chroma-manager.spec _topdir/SPECS
 	set -e;                                                \
 	dist=$$(rpm --eval %dist);                             \
