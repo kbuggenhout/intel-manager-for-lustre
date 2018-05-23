@@ -670,8 +670,10 @@ class ResourceManager(object):
         # the VolumeNode
         for volume_node in scope_volume_nodes:
             usable_node_resource_ids = [nr.id for nr in usable_node_resources]
-            log.debug("volume node %s (%s) usable %s" % (volume_node.id, volume_node.storage_resource_id, volume_node.storage_resource_id in usable_node_resource_ids))
-            if volume_node.storage_resource_id not in usable_node_resource_ids:
+            existing_resource = volume_node.storage_resource_id in usable_node_resource_ids
+            log.info("volume node %s (%s) usable %s" % (
+                volume_node.id, volume_node.storage_resource_id, existing_resource))
+            if not existing_resource:
                 self._remove_volume_node(volume_node, True)
 
     def _set_affinity_weights(self, volume, volume_nodes):
@@ -742,7 +744,10 @@ class ResourceManager(object):
             return False
 
     def _remove_volume_node(self, volume_node, try_remove_volume):
+        import traceback
         log.info("Removing VolumeNode %s" % volume_node.id)
+        log.info("Stacktrace:\n%s" % repr(traceback.format_stack()))
+
         volume_node.storage_resource = None
         volume_node.save()
         volume_node.mark_deleted()
@@ -1211,6 +1216,7 @@ class ResourceManager(object):
 
         for storage_resource_record in StorageResourceLearnEvent.objects.all():
             if storage_resource_record.storage_resource.id in ordered_for_deletion:
+                log.info('Removing storage resource %s' % storage_resource_record.storage_resource.id)
                 storage_resource_record.delete()
 
         # Delete any parent relations pointing to victim resources
@@ -1230,7 +1236,7 @@ class ResourceManager(object):
 
         for record_id in ordered_for_deletion:
             volume_nodes = record_id_to_volume_nodes[record_id]
-            log.debug("%s lun_nodes depend on %s" % (len(volume_nodes), record_id))
+            log.info("%s lun_nodes depend on %s" % (len(volume_nodes), record_id))
             for volume_node in volume_nodes:
                 self._remove_volume_node(volume_node, True)
 
@@ -1563,6 +1569,10 @@ class ResourceManager(object):
             record, created = creations[resource]
 
             if created and hasattr(session, 'host_id'):
+                try:
+                    log.debug('Creating Learn Event for resource %s' % resource.get_label())
+                except:
+                    log.debug('Creating Learn Event for resource %s' % resource.id)
                 StorageResourceLearnEvent.register_event(severity=logging.INFO,
                                                          alert_item=ManagedHost.objects.get(id=getattr(session, 'host_id')),
                                                          storage_resource=record)
