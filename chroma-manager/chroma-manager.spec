@@ -328,19 +328,19 @@ fi
 %attr(0755,root,root)/etc/init.d/chroma-host-discover
 %attr(0755,root,root)/usr/share/man/man1/chroma-config.1.gz
 %attr(0644,root,root)/etc/logrotate.d/chroma-manager
-# %attr(0644,root,root)%{_unitdir}/iml-corosync.service
-# %attr(0644,root,root)%{_unitdir}/iml-gunicorn.service
-# %attr(0644,root,root)%{_unitdir}/iml-http-agent.service
-# %attr(0644,root,root)%{_unitdir}/iml-job-scheduler.service
-# %attr(0644,root,root)%{_unitdir}/iml-lustre-audit.service
-# %attr(0644,root,root)%{_unitdir}/iml-manager.target
-# %attr(0644,root,root)%{_unitdir}/iml-plugin-runner.service
-# %attr(0644,root,root)%{_unitdir}/iml-power-control.service
-# %attr(0644,root,root)%{_unitdir}/iml-realtime.service
-# %attr(0644,root,root)%{_unitdir}/iml-settings-populator.service
-# %attr(0644,root,root)%{_unitdir}/iml-stats.service
-# %attr(0644,root,root)%{_unitdir}/iml-syslog.service
-# %attr(0644,root,root)%{_unitdir}/iml-view-server.service
+%attr(0644,root,root)%{_unitdir}/iml-corosync.service
+%attr(0644,root,root)%{_unitdir}/iml-gunicorn.service
+%attr(0644,root,root)%{_unitdir}/iml-http-agent.service
+%attr(0644,root,root)%{_unitdir}/iml-job-scheduler.service
+%attr(0644,root,root)%{_unitdir}/iml-lustre-audit.service
+%attr(0644,root,root)%{_unitdir}/iml-manager.target
+%attr(0644,root,root)%{_unitdir}/iml-plugin-runner.service
+%attr(0644,root,root)%{_unitdir}/iml-power-control.service
+%attr(0644,root,root)%{_unitdir}/iml-realtime.service
+%attr(0644,root,root)%{_unitdir}/iml-settings-populator.service
+%attr(0644,root,root)%{_unitdir}/iml-stats.service
+%attr(0644,root,root)%{_unitdir}/iml-syslog.service
+%attr(0644,root,root)%{_unitdir}/iml-view-server.service
 %attr(0755,root,root)%{manager_root}/manage.py
 %{manager_root}/*.conf
 %{manager_root}/agent-bootstrap-script.template
