@@ -187,20 +187,20 @@ cp %{SOURCE1} $RPM_BUILD_ROOT/etc/init.d/chroma-host-discover
 mkdir -p $RPM_BUILD_ROOT/usr/share/man/man1
 install %{SOURCE3} $RPM_BUILD_ROOT/usr/share/man/man1
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/chroma-manager
-mkdir -p %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE5} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE6} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE7} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE8} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE9} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE10} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE11} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE12} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE13} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE14} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE15} %{buildroot}%{_unitdir}/
-install -m 644 %{SOURCE16} %{buildroot}%{_unitdir}/
+mkdir -p $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE7} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE8} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE9} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE10} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE12} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE13} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE14} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE15} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 644 %{SOURCE16} $RPM_BUILD_ROOT%{_unitdir}/
 
 # only include modules in the main package
 for manager_file in $(find -L $RPM_BUILD_ROOT%{manager_root}/ -name "*.py"); do
@@ -322,6 +322,9 @@ fi
 %files -f manager.files
 %defattr(-,root,root)
 %{_bindir}/chroma-host-discover
+%attr(0700,root,root)%{_bindir}/chroma-config
+%dir %attr(0755,nginx,nginx)%{manager_root}
+/etc/nginx/conf.d/chroma-manager.conf
 %attr(0644,root,root)%{_unitdir}/iml-corosync.service
 %attr(0644,root,root)%{_unitdir}/iml-gunicorn.service
 %attr(0644,root,root)%{_unitdir}/iml-http-agent.service
@@ -335,9 +338,6 @@ fi
 %attr(0644,root,root)%{_unitdir}/iml-stats.service
 %attr(0644,root,root)%{_unitdir}/iml-syslog.service
 %attr(0644,root,root)%{_unitdir}/iml-view-server.service
-%attr(0700,root,root)%{_bindir}/chroma-config
-%dir %attr(0755,nginx,nginx)%{manager_root}
-/etc/nginx/conf.d/chroma-manager.conf
 %attr(0755,root,root)/etc/init.d/chroma-host-discover
 %attr(0755,root,root)/usr/share/man/man1/chroma-config.1.gz
 %attr(0644,root,root)/etc/logrotate.d/chroma-manager
