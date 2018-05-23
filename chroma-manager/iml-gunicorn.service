@@ -1,0 +1,13 @@
+[Unit]
+Description=IML Manager Service
+PartOf=iml-manager.target
+
+[Service]
+Type=simple
+ExecStart=/bin/gunicorn chroma-manager:application -c /usr/share/chroma-manager/chroma-manager.py
+Restart=on-failure
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=iml-manager.target
