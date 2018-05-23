@@ -23,7 +23,6 @@ from chroma_core.lib.util import chroma_settings
 
 settings = chroma_settings()
 
-from supervisor.xmlrpc import SupervisorTransport
 from django.contrib.auth.models import User, Group
 from django.core.management import ManagementUtility
 from django.core.validators import validate_email
@@ -49,28 +48,6 @@ except TypeError:
 log.setLevel(logging.INFO)
 
 firewall_control = FirewallControl.create()
-
-
-class SupervisorStatus(object):
-    def __init__(self):
-        username = None
-        password = None
-
-        # In production, use static inet_http_server settings
-        url = "http://localhost:9100/RPC2"
-
-        self._xmlrpc = xmlrpclib.ServerProxy(
-            'http://127.0.0.1',
-            transport=SupervisorTransport(username, password, url)
-        )
-
-    def get_all_process_info(self):
-        return self._xmlrpc.supervisor.getAllProcessInfo()
-
-    @staticmethod
-    def get_non_running_services():
-        return [p['name'] for p in SupervisorStatus().get_all_process_info()
-                if p['statename'] != 'RUNNING']
 
 
 class ServiceConfig(CommandLine):
@@ -289,11 +266,23 @@ class ServiceConfig(CommandLine):
         # The server_cert attribute is created on read
         crypto.server_cert
 
-    CONTROLLED_SERVICES = ['chroma-supervisor', 'nginx']
+    CONTROLLED_SERVICES = ['iml-manager.target', 'nginx']
+
+    MANAGER_SERVICES = [
+        'iml-corosync.service', 'iml-gunicorn.service',
+        'iml-http-agent.service', 'iml-job-scheduler.service',
+        'iml-lustre-audit.service', 'iml-plugin-runner.service',
+        'iml-power-control.service', 'iml-realtime.service',
+        'iml-settings-populator.service', 'iml-stats.service',
+        'iml-syslog.service', 'iml-view-server.service'
+    ]
 
     def _enable_services(self):
         log.info("Enabling daemons")
-        for service in self.CONTROLLED_SERVICES:
+
+        xs = self.CONTROLLED_SERVICES + self.MANAGER_SERVICES
+
+        for service in xs:
             controller = ServiceControl.create(service)
 
             error = controller.enable()
@@ -311,17 +300,28 @@ class ServiceConfig(CommandLine):
                 log.error(error)
                 raise RuntimeError(error)
 
-        SUPERVISOR_START_TIMEOUT = 10
+        xs = self.CONTROLLED_SERVICES + self.MANAGER_SERVICES
+
+        SYSTEMD_START_TIMEOUT = 10
         t = 0
         while True:
-            if not SupervisorStatus().get_non_running_services():
+            service_config = self._service_config(xs)
+
+            not_running = []
+
+            for x in xs:
+                service_status = service_config[x]
+                if not service_status['running']:
+                    not_running.append(x)
+
+            if len(not_running) == 0:
                 break
             else:
                 time.sleep(1)
                 t += 1
-                if t > SUPERVISOR_START_TIMEOUT:
+                if t > SYSTEMD_START_TIMEOUT:
                     msg = "Some services failed to start: %s" % \
-                          ", ".join(SupervisorStatus().get_non_running_services())
+                          ", ".join(not_running)
                     log.error(msg)
                     raise RuntimeError(msg)
 
@@ -335,29 +335,17 @@ class ServiceConfig(CommandLine):
                 log.error(error)
                 raise RuntimeError(error)
 
-        # Wait for supervisord to stop running
-        SUPERVISOR_STOP_TIMEOUT = 20
+        # Wait for 'iml-manager.target' to stop running
+        IML_MANAGER_STOP_TIMEOUT = 20
         t = 0
         stopped = False
         while True:
-            try:
-                SupervisorStatus().get_all_process_info()
-            except socket.error:
-                # No longer up
-                stopped = True
-            except xmlrpclib.Fault, e:
-                if (e.faultCode, e.faultString) == (6, 'SHUTDOWN_STATE'):
-                    # Up but shutting down
-                    pass
-                else:
-                    raise
-
-            if stopped:
+            if not ServiceControl.create('iml-manager.target').running:
                 break
             else:
-                if t > SUPERVISOR_STOP_TIMEOUT:
-                    raise RuntimeError("chroma-supervisor failed to stop after %s seconds" %
-                                       SUPERVISOR_STOP_TIMEOUT)
+                if t > IML_MANAGER_STOP_TIMEOUT:
+                    raise RuntimeError("iml-manager.target failed to stop after %s seconds" %
+                                       IML_MANAGER_STOP_TIMEOUT)
                 else:
                     t += 1
                     time.sleep(1)
@@ -628,8 +616,10 @@ class ServiceConfig(CommandLine):
         elif not self._users_exist():
             errors.append("No user accounts exist")
 
-        # Check init scripts are up
-        interesting_services = self.CONTROLLED_SERVICES + ['postgresql', 'rabbitmq-server']
+        # Check services are active
+        interesting_services = self.MANAGER_SERVICES + self.CONTROLLED_SERVICES + [
+            'postgresql', 'rabbitmq-server'
+        ]
         service_config = self._service_config(interesting_services)
         for s in interesting_services:
             try:
@@ -640,16 +630,6 @@ class ServiceConfig(CommandLine):
                     errors.append("Service %s is not running" % s)
             except KeyError:
                 errors.append("Service %s not found" % s)
-
-        # Check supervisor-controlled services are up
-        if 'chroma-supervisor' not in service_config:
-            errors.append("Service supervisor is not configured. Please run the command: "
-                          "'chroma-config setup' prior")
-        elif service_config['chroma-supervisor']['running']:
-            for process in SupervisorStatus().get_all_process_info():
-                if process['statename'] != 'RUNNING':
-                    errors.append("Service %s is not running (status %s)" % (process['name'],
-                                                                             process['statename']))
 
         return errors
 
@@ -865,7 +845,7 @@ def chroma_config():
             ntpserver = sys.argv[4]
 
         else:
-                usage()
+            usage()
 
         log.info("Starting setup...\n")
         errors = service_config.setup(username, password, ntpserver, check_db_space)

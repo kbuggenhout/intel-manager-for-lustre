@@ -86,20 +86,11 @@ nuke_logs:
 dev_setup: nuke_db nuke_logs
 	@./manage.py dev_setup $(DEV_SETUP_BUNDLES) || exit $$?
 
-supervisor: dev_setup
-	@./manage.py supervisor || exit $$?
-
-running_supervisor:
-	@nc -w1 -d localhost $(TEST_HTTPD_PORT) || { \
-		echo "You need to run 'make supervisor' in another terminal, then retry this command."; \
-		exit 1; \
-	}
-
 $(FCI_CLUSTER_CONFIG):
 	@echo "In order to run these tests, you must create $(FCI_CLUSTER_CONFIG) yourself."
 	@exit 1
 
-fci full_cluster_integration: $(FCI_CLUSTER_CONFIG) running_supervisor
+fci full_cluster_integration: $(FCI_CLUSTER_CONFIG)
 	@echo "Running integration tests against a full cluster ..."
 	@$(CURDIR)/tests/integration/run_tests -c $(FCI_CLUSTER_CONFIG) \
 		$(CURDIR)/tests/integration/shared_storage_configuration \
@@ -107,11 +98,6 @@ fci full_cluster_integration: $(FCI_CLUSTER_CONFIG) running_supervisor
 	exit $${PIPESTATUS[0]}
 
 service_tests: dev_setup
-	@while $(MAKE) running_supervisor >/dev/null; do \
-		spid=`ps aux | awk '/p[y]thon .\/manage.py supervisor/ {print $$2}'`; \
-		kill $$spid; \
-		sleep 1; \
-	done
 	@echo "Running service tests..."
 	@PYTHONPATH=. nosetests $(NOSE_ARGS) tests/services 2>&1 | tee test-services.log; \
 	exit $${PIPESTATUS[0]}

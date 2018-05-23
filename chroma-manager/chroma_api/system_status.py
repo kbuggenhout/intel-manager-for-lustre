@@ -15,7 +15,6 @@ from tastypie.resources import  Resource
 from tastypie.authorization import  Authorization
 from tastypie import fields
 
-from chroma_core.lib.service_config import SupervisorStatus
 from chroma_core.services import log_register
 from chroma_api.authentication import AnonymousAuthentication
 
