@@ -1,3 +1,6 @@
+%{?systemd_requires}
+BuildRequires: systemd
+
 %{!?name: %define name chroma-manager}
 %{?!version: %define version %(%{__python} -c "from scm_version import PACKAGE_VERSION; sys.stdout.write(PACKAGE_VERSION)")}
 %{?!package_release: %define package_release 1}
@@ -5,9 +8,6 @@
 
 # The install directory for the manager
 %{?!manager_root: %define manager_root /usr/share/chroma-manager}
-
-%{?systemd_requires}
-BuildRequires: systemd
 
 Summary: The Intel Manager for Lustre Monitoring and Administration Interface
 Name: %{name}
@@ -325,6 +325,9 @@ fi
 %attr(0700,root,root)%{_bindir}/chroma-config
 %dir %attr(0755,nginx,nginx)%{manager_root}
 /etc/nginx/conf.d/chroma-manager.conf
+%attr(0755,root,root)/etc/init.d/chroma-host-discover
+%attr(0755,root,root)/usr/share/man/man1/chroma-config.1.gz
+%attr(0644,root,root)/etc/logrotate.d/chroma-manager
 %attr(0644,root,root)%{_unitdir}/iml-corosync.service
 %attr(0644,root,root)%{_unitdir}/iml-gunicorn.service
 %attr(0644,root,root)%{_unitdir}/iml-http-agent.service
@@ -338,9 +341,6 @@ fi
 %attr(0644,root,root)%{_unitdir}/iml-stats.service
 %attr(0644,root,root)%{_unitdir}/iml-syslog.service
 %attr(0644,root,root)%{_unitdir}/iml-view-server.service
-%attr(0755,root,root)/etc/init.d/chroma-host-discover
-%attr(0755,root,root)/usr/share/man/man1/chroma-config.1.gz
-%attr(0644,root,root)/etc/logrotate.d/chroma-manager
 %attr(0755,root,root)%{manager_root}/manage.py
 %{manager_root}/*.conf
 %{manager_root}/agent-bootstrap-script.template
