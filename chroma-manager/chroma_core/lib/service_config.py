@@ -31,7 +31,7 @@ from django.core.exceptions import ValidationError
 from tastypie.models import ApiKey
 
 from chroma_core.models.bundle import Bundle
-from chroma_core.services.http_agent.crypto import Crypto
+from chroma_core.services.crypto import Crypto
 from chroma_core.models import ServerProfile, ServerProfilePackage, ServerProfileValidation
 from chroma_core.lib.util import CommandLine, CommandError
 from iml_common.lib.ntp import NTPConfig
