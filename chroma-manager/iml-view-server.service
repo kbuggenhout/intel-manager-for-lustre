@@ -1,6 +1,7 @@
 [Unit]
 Description=IML View Server Service
 PartOf=iml-manager.target
+After=iml-settings-populator.service
 
 [Service]
 Type=simple
