@@ -15,5 +15,4 @@ pep8==1.0.1
 pyflakes
 # For building diagrams in the docs
 pygraphviz
-sphinx==1.1.3
 werkzeug
