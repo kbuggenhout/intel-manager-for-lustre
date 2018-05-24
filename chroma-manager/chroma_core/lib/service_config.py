@@ -273,8 +273,7 @@ class ServiceConfig(CommandLine):
         'iml-http-agent.service', 'iml-job-scheduler.service',
         'iml-lustre-audit.service', 'iml-plugin-runner.service',
         'iml-power-control.service', 'iml-realtime.service',
-        'iml-settings-populator.service', 'iml-stats.service',
-        'iml-syslog.service', 'iml-view-server.service'
+        'iml-stats.service', 'iml-syslog.service', 'iml-view-server.service'
     ]
 
     def _enable_services(self):
