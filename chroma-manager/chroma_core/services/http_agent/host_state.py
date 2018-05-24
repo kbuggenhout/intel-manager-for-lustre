@@ -7,6 +7,7 @@ import logging
 import threading
 import datetime
 
+from chroma_agent_comms.views import MessageView
 from chroma_core.models import ManagedHost, HostContactAlert, HostRebootEvent
 from chroma_core.services import log_register
 from chroma_core.services.job_scheduler import job_scheduler_notify
@@ -23,7 +24,6 @@ class HostState(object):
     """
 
     # We get an update at the start of every long poll
-    from chroma_agent_comms.views import MessageView
     CONTACT_TIMEOUT = MessageView.LONG_POLL_TIMEOUT * 2
 
     def __init__(self, fqdn, boot_time, client_start_time):
