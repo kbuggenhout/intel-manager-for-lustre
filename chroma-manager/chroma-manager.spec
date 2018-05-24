@@ -324,7 +324,7 @@ fi
 %{_bindir}/chroma-host-discover
 %attr(0700,root,root)%{_bindir}/chroma-config
 %dir %attr(0755,nginx,nginx)%{manager_root}
-/etc/nginx/conf.d/chroma-manager.conf
+%ghost /etc/nginx/conf.d/chroma-manager.conf
 %attr(0755,root,root)/etc/init.d/chroma-host-discover
 %attr(0755,root,root)/usr/share/man/man1/chroma-config.1.gz
 %attr(0644,root,root)/etc/logrotate.d/chroma-manager
@@ -342,7 +342,6 @@ fi
 %attr(0644,root,root)%{_unitdir}/iml-syslog.service
 %attr(0644,root,root)%{_unitdir}/iml-view-server.service
 %attr(0755,root,root)%{manager_root}/manage.py
-%ghost %{manager_root}/*.conf
 %{manager_root}/agent-bootstrap-script.template
 %{manager_root}/chroma-manager.py
 %{manager_root}/chroma-manager.conf.template
