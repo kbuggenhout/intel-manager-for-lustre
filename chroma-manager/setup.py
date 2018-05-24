@@ -10,7 +10,6 @@ from scm_version import PACKAGE_VERSION
 from re import sub
 
 excludes = [
-    "*docs*",
 ]
 
 setup(

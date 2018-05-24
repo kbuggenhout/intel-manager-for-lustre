@@ -68,7 +68,7 @@
       "lustre_client_version": "",
       "address": "vm2",
       "ip_address": "10.73.10.32",
-      "distro": "el7.4"
+      "distro": "el7.5"
     }
   ],
   "pacemaker_hard_reset": true,
@@ -102,7 +102,7 @@
       "host": "host",
       "address": "vm4",
       "ip_address": "10.73.10.8",
-      "distro": "el7.4"
+      "distro": "el7.5"
     }
   ],
   "lustre_servers": [
@@ -132,7 +132,7 @@
       "root_password": "vagrant",
       "address": "vm5",
       "ip_address": "10.73.10.21",
-      "distro": "el7.4"
+      "distro": "el7.5"
     },
     {
       "bridges": ["a"],
@@ -160,7 +160,7 @@
       "root_password": "vagrant",
       "address": "vm6",
       "ip_address": "10.73.10.22",
-      "distro": "el7.4"
+      "distro": "el7.5"
     },
     {
       "bridges": ["b"],

@@ -43,7 +43,7 @@ COPR_REPO_TARGETS := storage_server.repo tests/framework/utils/defaults.sh
 
 SUBSTS := $(COPR_REPO_TARGETS)
 
-all: rpms docs
+all: rpms
 
 cleandist:
 	rm -rf  dist
@@ -200,19 +200,6 @@ requirements.txt: ../chroma-dependencies/Makefile ../chroma-dependencies/*/Makef
 
 download: install_requirements
 
-docs: requirements.txt version
-	echo "jenkins_fold:start:Make Docs"
-	set -e;                                                         \
-	if [ -z $(VIRTUAL_ENV) ] ; then                                 \
-		virtualenv myenv;                                       \
-		. myenv/bin/activate;                                   \
-		pip install --upgrade pip;                              \
-		pip install --upgrade setuptools;                       \
-		pip install -Ur requirements.txt;                       \
-	fi;                                                             \
-	$(MAKE) -C docs/ && cp docs/dist/*.tar.gz dist/
-	echo "jenkins_fold:end:Make Docs"
-
 substs: $(SUBSTS)
 
 clean_substs:
@@ -220,4 +207,4 @@ clean_substs:
 	    rm -f $(SUBSTS);        \
 	fi
 
-.PHONY: docs download ui-modules substs
+.PHONY: download ui-modules substs
