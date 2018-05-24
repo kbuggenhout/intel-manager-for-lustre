@@ -1216,7 +1216,6 @@ class ResourceManager(object):
 
         for storage_resource_record in StorageResourceLearnEvent.objects.all():
             if storage_resource_record.storage_resource.id in ordered_for_deletion:
-                log.info('Removing storage resource %s' % storage_resource_record.storage_resource.id)
                 storage_resource_record.delete()
 
         # Delete any parent relations pointing to victim resources
@@ -1236,7 +1235,7 @@ class ResourceManager(object):
 
         for record_id in ordered_for_deletion:
             volume_nodes = record_id_to_volume_nodes[record_id]
-            log.info("%s lun_nodes depend on %s" % (len(volume_nodes), record_id))
+            log.debug("%s lun_nodes depend on %s" % (len(volume_nodes), record_id))
             for volume_node in volume_nodes:
                 self._remove_volume_node(volume_node, True)
 
@@ -1569,10 +1568,6 @@ class ResourceManager(object):
             record, created = creations[resource]
 
             if created and hasattr(session, 'host_id'):
-                try:
-                    log.debug('Creating Learn Event for resource %s' % resource.get_label())
-                except:
-                    log.debug('Creating Learn Event for resource %s' % resource.id)
                 StorageResourceLearnEvent.register_event(severity=logging.INFO,
                                                          alert_item=ManagedHost.objects.get(id=getattr(session, 'host_id')),
                                                          storage_resource=record)
