@@ -342,6 +342,7 @@ fi
 %attr(0644,root,root)%{_unitdir}/iml-syslog.service
 %attr(0644,root,root)%{_unitdir}/iml-view-server.service
 %attr(0755,root,root)%{manager_root}/manage.py
+%ghost %{manager_root}/*.conf
 %{manager_root}/agent-bootstrap-script.template
 %{manager_root}/chroma-manager.py
 %{manager_root}/chroma-manager.conf.template
