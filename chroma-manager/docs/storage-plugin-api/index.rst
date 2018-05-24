@@ -397,6 +397,18 @@ is output), add your plugin to ``settings.STORAGE_PLUGIN_DEBUG_PLUGINS``.
 Changes to these settings take effect when the manager server services are
 restarted.
 
+Running the Plugin Process Separately
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+During development, the process that hosts storage plugins can be run separately,
+so that it can be stopped and started quickly by plugin developers:
+
+::
+
+    cd /usr/share/chroma-manager
+    supervisorctl -c production_supervisord.conf stop plugin_runner
+    ./manage.py chroma_service --verbose plugin_runner
+
 Correlating Controller Resources with Linux Devices Using Relations
 -------------------------------------------------------------------
 
