@@ -1,13 +1,13 @@
 %{?systemd_requires}
 BuildRequires: systemd
 
-%{!?name: %define name chroma-manager}
-%{?!version: %define version %(%{__python} -c "from scm_version import PACKAGE_VERSION; sys.stdout.write(PACKAGE_VERSION)")}
-%{?!package_release: %define package_release 1}
-%{?!python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; import sys; sys.stdout.write(get_python_lib())")}
+%{!?name: %global name chroma-manager}
+%{?!version: %global version %(%{__python} -c "from scm_version import PACKAGE_VERSION; sys.stdout.write(PACKAGE_VERSION)")}
+%{?!package_release: %global package_release 1}
+%{?!python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; import sys; sys.stdout.write(get_python_lib())")}
 
 # The install directory for the manager
-%{?!manager_root: %define manager_root /usr/share/chroma-manager}
+%{?!manager_root: %global manager_root /usr/share/chroma-manager}
 
 Summary: The Intel Manager for Lustre Monitoring and Administration Interface
 Name: %{name}
