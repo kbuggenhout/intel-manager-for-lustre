@@ -29,7 +29,8 @@ jobs:
       - psql -c "ALTER USER chroma CREATEDB;" -U postgres
       - psql -c "CREATE DATABASE chroma OWNER chroma;" -U postgres
     script:
-      - make unit-tests
+      - export IML_DISABLE_THREADS=1
+      - python manage.py test tests/unit/
   - stage: test
     env: Type='behave tests'
     install:
@@ -40,4 +41,5 @@ jobs:
       - psql -c "ALTER USER chroma CREATEDB;" -U postgres
       - psql -c "CREATE DATABASE chroma OWNER chroma;" -U postgres
     script:
-      - make feature_tests
+      - export IML_DISABLE_THREADS=1
+      - behave --format plain tests/feature/cli/features
