@@ -1,0 +1,23 @@
+language: python
+python: '2.7'
+sudo: required
+services:
+  - docker
+  - postgres
+addons:
+  apt:
+    update: true
+  postgresql: "9.2"
+jobs:
+  include:
+  - stage: test
+    env: Type='virus scan'
+    script:
+    - ./include/travis/virus-scan.sh
+  - stage: test
+    env: Type='module test'
+    before_script:
+    - su postgres -c 'createuser -R -S -d chroma'
+    - su postgres -c 'createdb -O chroma chroma'
+    script:
+    - nosetests

@@ -23,5 +23,4 @@ chroma-bundles/ieel-*.tar.gz
 chroma-manager/myenv/
 chroma-manager/chroma_test_env/
 chroma-manager/chroma-config.1.gz
-chroma-manager/requirements.txt
 chroma_unit_test_env/
