@@ -13,11 +13,16 @@ jobs:
   - stage: test
     env: Type='virus scan'
     script:
-    - ./include/travis/virus-scan.sh
+      - sudo apt-get install clamav -y
+      - sudo freshclam
+      - clamscan --quiet -r ./
   - stage: test
     env: Type='module test'
+    install:
+      - cd chroma-manager
+      - pip install -r requirements.txt
     before_script:
-    - su postgres -c 'createuser -R -S -d chroma'
-    - su postgres -c 'createdb -O chroma chroma'
+      - psql -c "CREATE USER chroma;" -U postgres
+      - psql -c "CREATE DATABASE chroma OWNER chroma;" -U postgres
     script:
-    - nosetests
+      - nosetests
