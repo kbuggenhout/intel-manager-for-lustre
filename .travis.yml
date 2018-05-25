@@ -28,4 +28,5 @@ jobs:
       - psql -c "CREATE USER chroma;" -U postgres
       - psql -c "CREATE DATABASE chroma OWNER chroma;" -U postgres
     script:
-      - nosetests
+      - export IML_DISABLE_THREADS=1
+      - python manage.py test tests/unit/
