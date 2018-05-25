@@ -94,7 +94,9 @@ class TestFilesystemDetection(StatsTestCaseMixin):
             params = {'limit': 0}
         )
         self.assertEqual(response.successful, True, response.text)
-        self.assertEqual(len(response.json['objects']), 1)
+        self._fetch_help(lambda: self.assertEqual(len(response.json['objects']), 1),
+                         ['brian.murrell@intel.com'], "EFS detect failure",
+                         timeout=60*60*24*3)
 
         return response.json['objects'][0]
 
