@@ -36,6 +36,10 @@ jobs:
     install:
       - cd chroma-manager
       - pip install -r requirements.txt
+    before_script:
+      - psql -c "CREATE USER chroma;" -U postgres
+      - psql -c "ALTER USER chroma CREATEDB;" -U postgres
+      - psql -c "CREATE DATABASE chroma OWNER chroma;" -U postgres
     script:
       - export IML_DISABLE_THREADS=1
       - behave --format plain tests/feature/cli/features
