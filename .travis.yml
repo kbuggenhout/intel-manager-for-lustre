@@ -20,7 +20,7 @@ jobs:
       - sudo freshclam
       - clamscan --quiet -r ./
   - stage: test
-    env: Type='module test'
+    env: Type='unit tests'
     install:
       - cd chroma-manager
       - pip install -r requirements.txt
@@ -31,3 +31,11 @@ jobs:
     script:
       - export IML_DISABLE_THREADS=1
       - python manage.py test tests/unit/
+  - stage: test
+    env: Type='behave tests'
+    install:
+      - cd chroma-manager
+      - pip install -r requirements.txt
+    script:
+      - export IML_DISABLE_THREADS=1
+      - behave --format plain tests/feature/cli/features
