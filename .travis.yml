@@ -3,11 +3,14 @@ python: '2.7'
 sudo: required
 services:
   - docker
-  - postgres
+  - postgresql
 addons:
   apt:
     update: true
   postgresql: "9.2"
+  apt:
+    packages:
+      - postgresql-server-dev-9.2
 jobs:
   include:
   - stage: test
