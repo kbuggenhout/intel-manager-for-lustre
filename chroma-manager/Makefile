@@ -110,11 +110,13 @@ agent_tests:
 
 unit_tests unit-tests:
 	@echo "Running standard unit tests..."
+	export IML_DISABLE_THREADS=1
 	@./manage.py test $(NOSE_ARGS) tests/unit 2>&1 | tee unit.log; \
 	exit $${PIPESTATUS[0]}
 
 feature_tests:
 	@echo "Running behave features tests..."
+	export IML_DISABLE_THREADS=1
 	@for feature in tests/feature/*; do \
 		[ -d $$feature ] || continue; \
 		logname=feature-$$(basename $$feature); \
