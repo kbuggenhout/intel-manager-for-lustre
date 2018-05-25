@@ -156,8 +156,8 @@ def configure_server():
 
 
 def start_services():
-    output = launch_command("systemctl enable chroma-agent")
-    output = launch_command("systemctl start chroma-agent")
+    launch_command("systemctl enable chroma-agent.service")
+    launch_command("systemctl start iml-storage-server.target")
 
 
 def kill_zombies():
