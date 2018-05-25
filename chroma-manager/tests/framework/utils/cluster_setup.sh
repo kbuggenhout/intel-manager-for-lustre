@@ -31,31 +31,15 @@ EOF
     cat <<\"EOF\" > /etc/yum.repos.d/cobbler-config.repo
 [core-0]
 name=core-0
-baseurl=http://cobbler/cobbler/ks_mirror/CentOS-7.4-x86_64
+baseurl=http://cobbler/cobbler/ks_mirror/CentOS-7.5-x86_64
 enabled=1
 gpgcheck=0
 priority=1
 
 
-[updates-centos7.4-x86_64]
-name=updates-centos7.4-x86_64
-baseurl=http://cobbler/cobbler/repo_mirror/updates-centos7.4-x86_64
-enabled=1
-priority=1
-gpgcheck=0
-
-
-[updates-centos7.3-x86_64]
-name=updates-centos7.3-x86_64
-baseurl=http://cobbler/cobbler/repo_mirror/updates-centos7.3-x86_64
-enabled=1
-priority=1
-gpgcheck=0
-
-
-[optional-rhel7.4-x86_64]
-name=optional-rhel7.4-x86_64
-baseurl=http://linux-ftp.sc.intel.com/pub/ISO/redhat/redhat-rhel/RHEL-7.4-GA/Server-optional/x86_64/os/
+[updates-centos7.5-x86_64]
+name=updates-centos7.5-x86_64
+baseurl=http://cobbler/cobbler/repo_mirror/updates-centos7.5-x86_64
 enabled=1
 priority=1
 gpgcheck=0
