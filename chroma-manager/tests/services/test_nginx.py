@@ -11,12 +11,12 @@ import settings
 import socket
 import ssl
 from tests.services.http_listener import HttpListener
-from tests.services.supervisor_test_case import SupervisorTestCase
+from tests.services.supervisor_test_case import SystemdTestCase
 
 
-class NginxTestCase(SupervisorTestCase):
+class NginxTestCase(SystemdTestCase):
     # Require job_scheduler because it is queried for available_transitions when rendering /ui/
-    SERVICES = ['nginx', 'gunicorn', 'job_scheduler', 'view_server']
+    SERVICES = ['nginx', 'iml-gunicorn', 'iml-job-scheduler', 'iml-view-server']
 
 
 class TestUi(NginxTestCase):
@@ -203,7 +203,7 @@ class TestSecureUrls(NginxTestCase):
             self.assertEqual(response.status_code, 200)
 
 
-class TestCrypto(SupervisorTestCase):
+class TestCrypto(SystemdTestCase):
     SERVICES = ['nginx']
 
     def _connect_socket(self, *args, **kwargs):

@@ -6,7 +6,7 @@ import time
 from django.db import transaction
 
 from collections import namedtuple
-from tests.services.supervisor_test_case import SupervisorTestCase
+from tests.services.systemd_test_case import SystemdTestCase
 from tests.services.agent_http_client import AgentHttpClient
 from iml_common.lib import util
 from iml_common.lib.date_time import IMLDateTime
@@ -26,17 +26,17 @@ RABBITMQ_GRACE_PERIOD = 1
 RABBITMQ_LONGWAIT_PERIOD = 360
 
 
-class TestAgentRpc(SupervisorTestCase, AgentHttpClient):
+class TestAgentRpc(SystemdTestCase, AgentHttpClient):
     """
     This class tests the AgentRpc functionality.  This class starts the job_scheduler
     service because that is where AgentRpc lives, but is not intended to test the other
     functionality in JobScheduler.
     """
-    SERVICES = ['http_agent', 'job_scheduler']
+    SERVICES = ['iml-http-agent', 'iml-job-scheduler']
     PLUGIN = AgentRpcMessenger.PLUGIN_NAME
 
     def __init__(self, *args, **kwargs):
-        SupervisorTestCase.__init__(self, *args, **kwargs)
+        SystemdTestCase.__init__(self, *args, **kwargs)
         AgentHttpClient.__init__(self)
 
     def _open_sessions(self, expect_initial = True, expect_reopen = False):

@@ -3,10 +3,10 @@ import os
 import time
 import xmlrpclib
 
-from tests.services.supervisor_test_case import SupervisorTestCase
+from tests.services.systemd_test_case import SystemdTestCase
 
 
-class TestStartStop(SupervisorTestCase):
+class TestStartStop(SystemdTestCase):
     """
     Generic tests for things that all services should do
     """
@@ -23,11 +23,6 @@ class TestStartStop(SupervisorTestCase):
         for program_name in clean_services:
             self.stop(program_name)
             self.assertExitedCleanly(program_name)
-
-    def test_exits_with_error_stopping_service_without_starting(self):
-        for program_name in self.programs:
-            with self.assertRaises(xmlrpclib.Fault):
-                self.stop(program_name)
 
     def test_exits_with_error_stopping_thread_without_starting(self):
         from chroma_core.services import ServiceThread
