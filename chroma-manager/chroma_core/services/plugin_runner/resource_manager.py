@@ -1011,6 +1011,7 @@ class ResourceManager(object):
         with self._instance_lock:
             session = self._sessions[scannable_id]
             self._persist_new_resources(session, resources)
+            self._cull_lost_resources(session, resources)
             self._persist_lun_updates(scannable_id)
             self._persist_nid_updates(scannable_id, None, None)
             self._persist_created_hosts(session, scannable_id, resources)
