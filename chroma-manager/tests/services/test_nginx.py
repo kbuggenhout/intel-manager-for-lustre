@@ -11,7 +11,7 @@ import settings
 import socket
 import ssl
 from tests.services.http_listener import HttpListener
-from tests.services.supervisor_test_case import SystemdTestCase
+from tests.services.systemd_test_case import SystemdTestCase
 
 
 class NginxTestCase(SystemdTestCase):

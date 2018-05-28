@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     action='store_true',
                     dest='no_bundles',
                     default=False,
-                    help='Do not load any bundles, instead create dummies for use with simulator'),
+                    help='Do not load any bundles, instead create dummies'),
     )
 
     def handle(self, *args, **options):
@@ -60,7 +60,6 @@ class Command(BaseCommand):
                     if not os.path.exists(repo):
                         os.makedirs(repo)
 
-                    #archive.list()
                     archive.extractall(repo)
                     archive.close()
 
@@ -93,5 +92,5 @@ that work.
                 service_config.register_profile(profile_file)
 
         print """Great success:
- * run `./manage.py supervisor`
+ * run `systemctl start iml-manager.target`
  * open %s""" % settings.SERVER_HTTP_URL
